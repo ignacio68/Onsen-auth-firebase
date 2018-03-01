@@ -3,6 +3,14 @@ export default {
     loading: false,
     error: null
   },
+  getters: {
+    loading (state) { // Devuelve el estado del loading
+      return state.loading
+    },
+    error (state) { // Devuelve el error
+      return state.error
+    }
+  },
   mutations: {
     /* Controla el load */
     setLoading (state, payload) {
@@ -23,14 +31,6 @@ export default {
   actions: {
     clearError ({commit}) {
       commit('clearError')
-    }
-  },
-  getters: {
-    loading (state) { // Devuelve el estado del loading
-      return state.loading
-    },
-    error (state) { // Devuelve el error
-      return state.error
     }
   }
 }

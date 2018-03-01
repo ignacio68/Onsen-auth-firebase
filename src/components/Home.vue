@@ -1,6 +1,6 @@
 <template>
   <v-ons-page>
-    <h1>Home Page</h1>
+
     <v-ons-button
       class="btn-large"
       modifier="large"
@@ -21,6 +21,7 @@
   import Registration from './User/Registration.vue'
 
   export default {
+    name: 'home',
     methods: {
       onLogIn () {
         this.$store.commit('push', SignIn)
@@ -33,10 +34,4 @@
 </script>
 
 <style scoped>
- .btn-large {
-   margin-left: 5%;
-   margin-bottom: 5px;
-   width: 90%;
-   background-color: #e91e63
- }
 </style>

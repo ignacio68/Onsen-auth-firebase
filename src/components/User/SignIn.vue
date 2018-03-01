@@ -1,121 +1,98 @@
 <template>
-  <v-ons-page @click="onDismissed">
-    <v-ons-toolbar>
-      <div class="center">Log In</div>
-    </v-ons-toolbar>
-    <div class="container">
-      <div class="toast-alerta" v-if="error">
-        <v-ons-toast
-          visible
-          animation="fall">
-          {{ error.message }}
-        </v-ons-toast>
+  <v-ons-page>
+    <v-ons-toolbar
+     modifier="transparent cover-content noshadow">
+      <div class="left">
+        <v-ons-back-button></v-ons-back-button>
       </div>
-        <form>
-          <v-ons-list>
-             <v-ons-list-item :modifier="md ? 'nodivider' : ''">
-              <div class="left">
-                <v-ons-icon
-                  icon="ion-email, md-email"
-                  size="30px"
-                  class="list-item__icon">
-                </v-ons-icon>
-              </div>
-              <div class="center">
-                  <v-ons-input
-                    type="email"
-                    placeholder="email"
-                    required
-                    float
-                    modifier="underbar"
-                    v-model="email"
-                  >
-                  </v-ons-input>
-              </div>
-            </v-ons-list-item>
-            <v-ons-list-item :modifier="md ? 'nodivider' : ''">
-              <user-input-password
-                v-model="password"></user-input-password>
-            </v-ons-list-item>
-            <v-ons-list-item :modifier="md ? 'nodivider' : ''">
-              <user-input></user-input>
-            </v-ons-list-item>
-          </v-ons-list>
-          <v-ons-button
-            class="center btn-large"
-            modifier="large"
-            :disable="loading"
-            ripple="true"
-            @click="onSignIn">
-            Entrar
-          </v-ons-button>
-        </form>
-    </div>
+      <div class="center">LOG IN</div>
+    </v-ons-toolbar>
+    <v-ons-list>
+      <v-ons-list-item
+        v-for="(socialButton, $index) in socialButtons" :key="socialButton.name" tappable>
+        <social-button
+          :name="socialButton.name"
+          :index="$index"
+          @socialButtonEvent="socialLogIn($event)"
+        >
+        </social-button>
+      </v-ons-list-item>
+    </v-ons-list>
     <v-ons-button
       class="center"
       modifier="quiet"
-      @click.prevent="nuevaCuenta">
-      No tienes una cuenta?
-    </v-ons-button>
-    <v-ons-button
-      class="center"
-      modifier="quiet"
-      @click.prevent="onTerms">
+      @click.native="onTerms">
       Términos del contrato
     </v-ons-button>
+    <p>El usuario es: </p><h1>{{ userName }}</h1>
   </v-ons-page>
 </template>
 
 <script>
-  import Main from '../App/Main'
+  import SocialButton from '../Shared/SocialButton'
   import Terms from './TermsConditions'
-  import Registration from './Registration'
-  import UserInput from '../Shared/UserInput'
-  import UserInputPassword from '../Shared/UserInputPassword'
+  import Init from '../App/Init'
 
   export default{
+    name: 'signIn',
     components: {
-      UserInput,
-      UserInputPassword
+      SocialButton
+    },
+    beforeCreate () {
+      console.log('LogIn: beforeCreate')
+      this.$store.dispatch('isActive', Init)
+    },
+    created () {
+      console.log('LogIn:  created')
+    },
+    beforeMount () {
+      console.log('LogIn:  beforeMount')
+    },
+    mounted () {
+      console.log('LogIn:  mounted')
+    },
+    beforeUpdate () {
+      console.log('LogIn: : beforeUpdate')
+    },
+    updated () {
+      console.log('Configuration: updated')
+    },
+    beforeDestroy () {
+      console.log('Configuration: beforeDestroy')
+    },
+    destroyed () {
+      console.log('Configuration: destroyed')
     },
     data () {
       return {
-        email: '',
-        password: ''
+        userName: ''
+      }
+    },
+    watch: {
+      if (isUser) {
+        this.userName = user.displayName
+        console.log('El suario es: ' + userName)
+        this.$store.commit('push', Init)
       }
     },
     computed: {
-      user () {
-        return this.$store.getters.user
-      },
-      error () {
-        return this.$store.getters.error
-      },
       loading () {
         return this.$store.getters.loading
-      }
-    },
-    // Si todos los valores introducidos están correctos,cargamos la página principal de la aplicación
-    watch: {
-      user (value) {
-        if (value !== null && value !== undefined) {
-          this.$store.commit('push', Main)
-        }
-      }
+      },
+      socialButtons () {
+        return this.$store.getters.socialButtonsVisible
+      },
+      isUser () {
+        return this.$store.getters.user !== null && this.$store.getters.user !== undefined
+      },
     },
     methods: {
-      onSignIn () {
-        this.$store.dispatch('signUserIn', {email: this.email, password: this.password})
-      },
       onTerms () {
         this.$store.commit('push', Terms)
       },
-      nuevaCuenta () {
-        this.$store.commit('push', Registration)
-      },
-      onDismissed () {
-        console.log('estoy en onDismissed!!')
-        this.$store.dispatch('clearError')
+      socialLogIn (index) {
+        let socialProvider = this.socialButtons[index].socialLogIn
+        this.$store.dispatch(socialProvider)
       }
     }
   }

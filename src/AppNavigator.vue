@@ -7,11 +7,12 @@
 </template>
 
 <script>
-  import Home from './components/Home.vue'
+  import Configuration from './components/Configuration'
 
   export default {
+    name: 'appNavigator',
     beforeCreate () {
-      this.$store.commit('push', Home)
+      this.$store.commit('push', Configuration)
     },
     data () {
       return {

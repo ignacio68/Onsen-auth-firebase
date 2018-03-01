@@ -25,7 +25,14 @@
       </div>
         <form>
         <v-ons-list>
-          <v-ons-list-item>
+          <v-ons-list-item :modifier="md ? 'nodivider' : ''">
+            <div class="left">
+              <v-ons-icon
+                icon="ion-person, zmdi-account"
+                size="30px"
+                class="list-item__icon">
+              </v-ons-icon>
+            </div>
             <div class="center">
               <v-ons-input
                 type="name"
@@ -39,33 +46,64 @@
               </v-ons-input>
             </div>
           </v-ons-list-item>
-          <v-ons-list-item>
+          <v-ons-list-item :modifier="md ? 'nodivider' : ''">
+            <div class="left">
+              <v-ons-icon
+                icon="ion-email, md-email"
+                size="30px"
+                class="list-item__icon">
+              </v-ons-icon>
+            </div>
             <div class="center">
               <v-ons-input
                 type="email"
                 placeholder="email"
-                float
-                modifier="transparent"
-                v-model="email"
-                @click="onDismissed"
                 required
+                float
+                modifier="underbar"
+                v-model="email"
               >
               </v-ons-input>
             </div>
           </v-ons-list-item>
-          <v-ons-list-item>
+          <v-ons-list-item :modifier="md ? 'nodivider' : ''">
+            <user-input-password
+              minlength="8"
+              placeholder="componente contraseña"
+              required
+              modifier="float"
+              v-model="password"
+            >
+            </user-input-password>
+          </v-ons-list-item>
+          <v-ons-list-item :modifier="md ? 'nodivider' : ''">
+            <div class="left">
+              <v-ons-icon
+                icon="ion-locked, md-lock"
+                size="30px"
+                class="list-item__icon">
+              </v-ons-icon>
+            </div>
             <div class="center">
               <v-ons-input
                 type="password"
                 placeholder="contraseña"
-                minlength="4"
+                minlength="8"
                 float
                 modifier="transparent"
-                v-model="password"
-                @click="onDismissed"
+                v-model="confirmPassword"
+                @click="comparePasswords"
                 required
               >
               </v-ons-input>
+              <div class="left">
+                <v-ons-icon
+                  class="rigth"
+                  id="icon"
+                  icon="ion-eye-disabled, md-eye-off"
+                  size="30px">
+                </v-ons-icon>
+              </div>
             </div>
           </v-ons-list-item>
         </v-ons-list>
@@ -91,21 +129,27 @@
 </template>
 
 <script>
-  import Main from '../App/Main'
+  import Init from '../App/Init'
   import Terms from './TermsConditions'
+  import UserInputPassword from '../Shared/UserInputPassword'
 
   export default{
+    name: 'registration',
+    components: {
+      UserInputPassword
+    },
     data () {
       return {
         name: '',
         email: '',
-        password: ''
+        password: '',
+        confirmPassword: ''
       }
     },
     computed: {
-      // comparePasswords () {
-      //   return this.password !== this.confirmPassword ? 'El password no es el mismo' : ''
-      // },
+      comparePasswords () {
+        return this.password !== this.confirmPassword ? 'El password no es el mismo' : ''
+      },
       user () {
         return this.$store.getters.user // recupera la información del user desde el state
       },
@@ -120,7 +164,7 @@
     watch: {
       user (value) {
         if (value !== null && value !== undefined) {
-          this.$store.commit('push', Main)
+          this.$store.commit('push', Init)
         }
       }
     },
